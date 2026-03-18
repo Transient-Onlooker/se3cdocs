@@ -2,7 +2,8 @@ import { BrowserRouter as Router, Routes, Route, Link, useParams, useLocation } 
 import { 
   LayoutDashboard, Library, CreditCard, Link as LinkIcon, 
   History, Users, ChevronRight, Zap, Database, Calendar, 
-  Globe, Loader2, Clock, Star, Lock, Key, RefreshCw, LogOut
+  Globe, Loader2, Clock, Star, Lock, Key, RefreshCw, LogOut,
+  Menu, X
 } from 'lucide-react';
 import { useState, useEffect, useCallback } from 'react';
 import ReactMarkdown from 'react-markdown';
@@ -330,8 +331,14 @@ function App() {
   const [time, setTime] = useState(new Date());
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isSyncing, setIsSyncing] = useState(false);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const location = useLocation();
   const isDashboardActive = location.pathname === '/';
+
+  // 페이지 이동 시 사이드바 닫기 (모바일용)
+  useEffect(() => {
+    setIsSidebarOpen(false);
+  }, [location.pathname]);
 
   const fetchData = useCallback(async (force = false) => {
     setIsSyncing(true);
@@ -386,8 +393,22 @@ function App() {
   return (
     <div className="flex min-h-screen bg-[#050505] text-slate-200 font-sans selection:bg-blue-500/30 selection:text-white overflow-hidden font-['IBM_Plex_Sans_KR'] uppercase">
       
-      <aside className="w-96 bg-[#080808] border-r border-slate-900 flex flex-col sticky top-0 h-screen shrink-0 z-20 overflow-hidden shadow-2xl font-['IBM_Plex_Sans_KR']">
-        <div className="p-14 mb-4">
+      {/* Mobile Overlay */}
+      {isSidebarOpen && (
+        <div 
+          className="fixed inset-0 bg-black/60 backdrop-blur-sm z-40 lg:hidden"
+          onClick={() => setIsSidebarOpen(false)}
+        />
+      )}
+
+      <aside className={`fixed inset-y-0 left-0 z-50 w-80 bg-[#080808] border-r border-slate-900 flex flex-col h-screen transition-transform duration-300 ease-in-out lg:translate-x-0 lg:static lg:w-96 shrink-0 shadow-2xl font-['IBM_Plex_Sans_KR'] ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'}`}>
+        <div className="p-14 mb-4 relative">
+          <button 
+            onClick={() => setIsSidebarOpen(false)}
+            className="lg:hidden absolute top-10 right-8 p-2 text-slate-500 hover:text-white transition-colors"
+          >
+            <X size={24} />
+          </button>
           <Link to="/" className="flex flex-col gap-1 group">
             <div className="flex items-center gap-4">
               <div className="w-12 h-12 bg-blue-600 rounded-2xl flex items-center justify-center text-white shadow-[0_0_20px_rgba(37,99,235,0.4)] group-hover:rotate-12 transition-all duration-500 border border-blue-400/20">
@@ -446,9 +467,18 @@ function App() {
       </aside>
 
       <main className="flex-1 flex flex-col h-screen overflow-hidden bg-[#050505] font-['IBM_Plex_Sans_KR']">
-        <header className="h-20 border-b border-slate-900/50 flex items-center justify-between px-16 bg-[#050505]/80 backdrop-blur-2xl z-30 shrink-0">
-          <div className="flex items-center gap-5 text-[11px] font-bold text-slate-600 uppercase tracking-[0.5em]">
-            <Globe size={16} /> Operation Terminal v2.3
+        <header className="h-20 border-b border-slate-900/50 flex items-center justify-between px-6 md:px-16 bg-[#050505]/80 backdrop-blur-2xl z-30 shrink-0">
+          <div className="flex items-center gap-4 md:gap-5 text-[11px] font-bold text-slate-600 uppercase tracking-[0.5em]">
+            <button 
+              onClick={() => setIsSidebarOpen(true)}
+              className="lg:hidden p-2 -ml-2 text-slate-400 hover:text-white transition-colors"
+            >
+              <Menu size={24} />
+            </button>
+            <div className="hidden sm:flex items-center gap-5">
+              <Globe size={16} /> Operation Terminal v2.3
+            </div>
+            <div className="sm:hidden font-black text-blue-500 tracking-tighter text-lg">SE3C</div>
           </div>
           <div className="flex items-center gap-8">
             <button 
