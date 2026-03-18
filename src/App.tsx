@@ -479,6 +479,7 @@ function App() {
   const [isSyncing, setIsSyncing] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
   const location = useLocation();
   const isDashboardActive = location.pathname === '/';
 
@@ -508,7 +509,10 @@ function App() {
       const url = force ? `${GAS_URL}?t=${Date.now()}` : '/data.json';
       const res = await fetch(url);
       const json = await res.json();
-      if (Array.isArray(json)) setData(json);
+      if (Array.isArray(json)) {
+        setData(json);
+        setLastUpdated(new Date());
+      }
     } catch (err) {
       console.error("Data load failed:", err);
     } finally {
@@ -535,8 +539,17 @@ function App() {
     }
 
     fetchData();
+    
+    // 5분마다 데이터 자동 새로고침 (300,000ms)
+    const syncTimer = setInterval(() => {
+      fetchData(true);
+    }, 300000);
+
     const timer = setInterval(() => setTime(new Date()), 1000);
-    return () => clearInterval(timer);
+    return () => {
+      clearInterval(syncTimer);
+      clearInterval(timer);
+    };
   }, [fetchData, handleLogout]);
 
   const handleLogin = (pw: string) => {
@@ -655,10 +668,17 @@ function App() {
             <button 
               onClick={() => fetchData(true)}
               disabled={isSyncing}
-              className="flex items-center gap-3 px-3 py-2 bg-slate-900 border border-slate-800 rounded-xl text-[10px] font-black text-slate-400 hover:text-white hover:border-blue-500/50 transition-all active:scale-95 disabled:opacity-50 group"
+              className="flex items-center gap-3 px-3 py-2 bg-slate-900 border border-slate-800 rounded-xl text-[10px] font-black text-slate-400 hover:text-white hover:border-blue-500/50 transition-all active:scale-95 disabled:opacity-50 group relative"
             >
               <RefreshCw size={14} className={`${isSyncing ? 'animate-spin text-blue-500' : 'group-hover:text-blue-400'}`} />
-              <span className="hidden sm:inline tracking-widest uppercase">{isSyncing ? 'SYNCING...' : 'FORCE_SYNC'}</span>
+              <div className="flex flex-col items-start leading-none gap-1">
+                <span className="hidden sm:inline tracking-widest uppercase">{isSyncing ? 'SYNCING...' : 'FORCE_SYNC'}</span>
+                {lastUpdated && !isSyncing && (
+                  <span className="hidden md:inline text-[8px] text-slate-600 font-medium">
+                    LAST: {lastUpdated.toLocaleTimeString('ko-KR', { hour12: false, hour: '2-digit', minute: '2-digit' })}
+                  </span>
+                )}
+              </div>
             </button>
             <div className="hidden md:block h-8 w-px bg-slate-900" />
             <div className="hidden md:flex items-center gap-4 text-3xl font-black text-slate-100 uppercase tracking-widest font-mono text-shadow-blue">
