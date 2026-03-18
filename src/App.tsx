@@ -392,7 +392,20 @@ const PageContent = ({ data }: { data: Page[] }) => {
               ),
               th: ({node, ...props}) => <th {...props} className="px-10 py-8 bg-slate-800/50 text-left text-[11px] font-bold text-white uppercase tracking-[0.3em]" />,
               td: ({node, ...props}) => <td {...props} className="px-10 py-8 text-base text-slate-200 font-medium border-t border-slate-800 whitespace-pre-wrap" />,
-              p: ({node, ...props}) => <p {...props} className="mb-10 leading-relaxed text-slate-200 text-xl font-medium" />
+              p: ({node, ...props}) => <p {...props} className="mb-10 leading-relaxed text-slate-200 text-xl font-medium" />,
+              img: ({node, ...props}) => (
+                <div className="my-16 flex flex-col items-center">
+                  <img 
+                    {...props} 
+                    className="rounded-[2rem] border border-slate-800 shadow-[0_0_50px_rgba(0,0,0,0.5)] max-w-full hover:scale-[1.02] transition-transform duration-500" 
+                  />
+                  {props.alt && (
+                    <span className="mt-6 text-xs font-bold text-slate-500 uppercase tracking-[0.3em]">
+                      {props.alt}
+                    </span>
+                  )}
+                </div>
+              )
             }}
           >
             {sanitizedContent}
