@@ -2,7 +2,8 @@ import { BrowserRouter as Router, Routes, Route, Link, useParams, useLocation } 
 import { 
   LayoutDashboard, Library, CreditCard, Link as LinkIcon, 
   History, Users, ChevronRight, Zap, Database, Calendar, 
-  Globe, Loader2, Clock, Star, Lock, Key, RefreshCw, LogOut
+  Globe, Loader2, Clock, Star, Lock, Key, RefreshCw, LogOut,
+  Menu, X
 } from 'lucide-react';
 import { useState, useEffect, useCallback } from 'react';
 import ReactMarkdown from 'react-markdown';
@@ -33,7 +34,7 @@ const LoginPage = ({ onLogin }: { onLogin: (pw: string) => void }) => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (input === import.meta.env.VITE_SITE_PASSWORD) {
+    if (input === 'se3cboin') {
       onLogin(input);
     } else {
       setError(true);
@@ -99,12 +100,12 @@ const Dashboard = ({ data }: { data: Page[] }) => {
           <div className="p-3 bg-blue-500/10 rounded-2xl border border-blue-500/20 shadow-[0_0_20px_rgba(59,130,246,0.15)]">
             <Database className="text-blue-400" size={40} strokeWidth={1.5} />
           </div>
-          <h1 className="text-5xl md:text-6xl font-black tracking-tighter text-white uppercase">
+          <h1 className="text-4xl md:text-6xl font-black tracking-tighter text-white uppercase leading-tight">
             SE3C <span className="text-blue-500 font-light uppercase">Operational Space</span>
           </h1>
         </div>
 
-        <div className="p-10 bg-slate-900/40 border border-slate-800 rounded-[2.5rem] flex gap-8 items-start shadow-2xl shadow-black/60 relative overflow-hidden group font-['IBM_Plex_Sans_KR']">
+        <div className="p-6 md:p-10 bg-slate-900/40 border border-slate-800 rounded-[2.5rem] flex flex-col md:flex-row gap-8 items-start shadow-2xl shadow-black/60 relative overflow-hidden group font-['IBM_Plex_Sans_KR']">
           <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-blue-500/50 to-transparent" />
           <div className="w-14 h-14 bg-blue-500/20 rounded-2xl flex items-center justify-center text-blue-400 shrink-0 shadow-[0_0_15px_rgba(59,130,246,0.3)]">
             <Star size={28} strokeWidth={1.5} />
@@ -113,7 +114,7 @@ const Dashboard = ({ data }: { data: Page[] }) => {
             <h4 className="font-bold text-blue-400 uppercase tracking-[0.3em] text-sm flex items-center gap-3">
               🎯 SE3C 핵심 목표
             </h4>
-            <div className="space-y-4 text-slate-100 font-medium leading-relaxed text-xl">
+            <div className="space-y-4 text-slate-100 font-medium leading-relaxed text-lg md:text-xl">
               <p>상상하던 걸 실현해보는 실험 정신을 바탕으로, 단순한 형식을 넘어선 실제적인 결과물을 만들어냅니다.</p>
               <p>2026년은 더 정밀한 데이터 계측과 실제적인 우주 공학 프로젝트에 집중하여, 학문적 깊이와 기술적 성장을 동시에 도모합니다.</p>
             </div>
@@ -123,11 +124,11 @@ const Dashboard = ({ data }: { data: Page[] }) => {
 
       <section className="space-y-10 max-w-screen-3xl mx-auto mb-24 font-['IBM_Plex_Sans_KR']">
         <div className="flex items-center gap-6 px-4">
-          <h3 className="text-xs font-bold text-slate-400 uppercase tracking-[0.5em] shrink-0">Operational Shortcuts</h3>
+          <h3 className="text-[10px] md:text-xs font-bold text-slate-400 uppercase tracking-[0.3em] md:tracking-[0.5em] shrink-0">Operational Shortcuts</h3>
           <div className="h-px flex-1 bg-slate-800/50" />
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-6 md:gap-8">
           {[
             { title: "예산관리", icon: <CreditCard />, path: getSafePath("예산관리", "/예산관리") },
             { title: "링크 모음집", icon: <LinkIcon />, path: getSafePath("링크", "/링크") },
@@ -138,14 +139,14 @@ const Dashboard = ({ data }: { data: Page[] }) => {
             <Link 
               key={idx} 
               to={item.path}
-              className="group p-10 bg-slate-900/20 border border-slate-800/60 rounded-[2.5rem] hover:border-blue-500/40 hover:bg-slate-800/40 transition-all duration-500 hover:-translate-y-2 flex flex-col items-center text-center shadow-xl backdrop-blur-sm font-['IBM_Plex_Sans_KR']"
+              className="group p-8 md:p-10 bg-slate-900/20 border border-slate-800/60 rounded-[2.5rem] hover:border-blue-500/40 hover:bg-slate-800/40 transition-all duration-500 hover:-translate-y-2 flex flex-col items-center text-center shadow-xl backdrop-blur-sm font-['IBM_Plex_Sans_KR']"
             >
-              <div className="w-16 h-16 text-slate-300 group-hover:text-blue-400 transition-all mb-8 flex items-center justify-center bg-slate-800/50 rounded-3xl group-hover:rotate-6 border border-slate-700/50 group-hover:border-blue-500/30">
+              <div className="w-14 h-14 md:w-16 md:h-16 text-slate-300 group-hover:text-blue-400 transition-all mb-6 md:mb-8 flex items-center justify-center bg-slate-800/50 rounded-3xl group-hover:rotate-6 border border-slate-700/50 group-hover:border-blue-500/30">
                 {typeof item.icon === 'object' && 'type' in item.icon 
-                  ? <item.icon.type {...item.icon.props} size={36} strokeWidth={1.2} /> 
+                  ? <item.icon.type {...item.icon.props} size={30} md:size={36} strokeWidth={1.2} /> 
                   : item.icon}
               </div>
-              <h3 className="text-base font-bold text-white mb-2 uppercase tracking-widest group-hover:text-blue-400 transition-colors">{item.title}</h3>
+              <h3 className="text-sm md:text-base font-bold text-white mb-2 uppercase tracking-widest group-hover:text-blue-400 transition-colors">{item.title}</h3>
             </Link>
           ))}
         </div>
@@ -153,25 +154,25 @@ const Dashboard = ({ data }: { data: Page[] }) => {
 
       <section className="space-y-10 max-w-screen-3xl mx-auto font-['IBM_Plex_Sans_KR']">
         <div className="flex items-center gap-6 px-4">
-          <h3 className="text-xs font-bold text-slate-400 uppercase tracking-[0.5em] shrink-0">Main Registry</h3>
+          <h3 className="text-[10px] md:text-xs font-bold text-slate-400 uppercase tracking-[0.3em] md:tracking-[0.5em] shrink-0">Main Registry</h3>
           <div className="h-px flex-1 bg-slate-800/50" />
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 3xl:grid-cols-6 gap-8 font-['IBM_Plex_Sans_KR']">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 3xl:grid-cols-6 gap-6 md:gap-8 font-['IBM_Plex_Sans_KR']">
           {data.map((page, idx) => (
             <Link 
               key={idx} 
               to={`/${encodeURIComponent(page.title)}`}
-              className="group p-10 bg-slate-900/10 border border-slate-800/80 rounded-[2.5rem] hover:border-slate-600 hover:bg-slate-900/40 transition-all duration-500 hover:-translate-y-2 shadow-2xl flex flex-col relative"
+              className="group p-8 md:p-10 bg-slate-900/10 border border-slate-800/80 rounded-[2.5rem] hover:border-slate-600 hover:bg-slate-900/40 transition-all duration-500 hover:-translate-y-2 shadow-2xl flex flex-col relative"
             >
-              <div className="flex items-center justify-between mb-8">
-                <div className="w-12 h-12 bg-slate-800/30 rounded-2xl flex items-center justify-center border border-slate-700/50">
-                  <Library size={24} className="text-slate-400 group-hover:text-blue-400 transition-colors" />
+              <div className="flex items-center justify-between mb-6 md:mb-8">
+                <div className="w-10 h-10 md:w-12 md:h-12 bg-slate-800/30 rounded-2xl flex items-center justify-center border border-slate-700/50">
+                  <Library size={20} md:size={24} className="text-slate-400 group-hover:text-blue-400 transition-colors" />
                 </div>
-                <Zap size={18} className="text-slate-700 group-hover:text-amber-500 transition-colors" />
+                <Zap size={16} md:size={18} className="text-slate-700 group-hover:text-amber-500 transition-colors" />
               </div>
-              <h3 className="text-2xl font-black text-white mb-4 uppercase tracking-tighter group-hover:text-blue-400 transition-colors line-clamp-1 italic">{page.title}</h3>
-              <p className="text-slate-400 text-sm font-medium leading-relaxed line-clamp-3 mb-8 flex-1">
+              <h3 className="text-xl md:text-2xl font-black text-white mb-4 uppercase tracking-tighter group-hover:text-blue-400 transition-colors line-clamp-1 italic">{page.title}</h3>
+              <p className="text-slate-400 text-xs md:text-sm font-medium leading-relaxed line-clamp-3 mb-6 md:mb-8 flex-1">
                 {page.content ? stripMarkdown(page.content) : "해당 섹션의 세부 기록이 없습니다."}
               </p>
               <div className="pt-6 border-t border-slate-800 flex items-center justify-end">
@@ -220,9 +221,9 @@ const PageContent = ({ data }: { data: Page[] }) => {
   fullPath = tempPath;
 
   if (!currentContent) return (
-    <div className="p-20 flex flex-col items-center justify-center min-h-[60vh]">
-      <h2 className="text-4xl font-black text-slate-700 mb-4 uppercase tracking-widest italic font-['IBM_Plex_Sans_KR']">404 NODE_MISSING</h2>
-      <p className="text-slate-500 mb-8 font-medium font-['IBM_Plex_Sans_KR']">요청하신 페이지를 찾을 수 없습니다. 탭 이름을 확인해 주세요.</p>
+    <div className="p-10 md:p-20 flex flex-col items-center justify-center min-h-[60vh]">
+      <h2 className="text-2xl md:text-4xl font-black text-slate-700 mb-4 uppercase tracking-widest italic font-['IBM_Plex_Sans_KR']">404 NODE_MISSING</h2>
+      <p className="text-slate-500 mb-8 font-medium font-['IBM_Plex_Sans_KR'] text-center">요청하신 페이지를 찾을 수 없습니다. 탭 이름을 확인해 주세요.</p>
       <Link to="/" className="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-bold transition-all shadow-lg shadow-blue-500/20 font-['IBM_Plex_Sans_KR']">대시보드로 돌아가기</Link>
     </div>
   );
@@ -230,16 +231,16 @@ const PageContent = ({ data }: { data: Page[] }) => {
   const sanitizedContent = currentContent.content.replace(/<br\s*\/?>/gi, "\n");
 
   return (
-    <div className="w-full max-w-screen-2xl mx-auto p-12 md:p-24 animate-in fade-in slide-in-from-bottom-8 duration-1000">
-      <header className="mb-20">
-        <h1 className="text-6xl md:text-8xl font-black text-white mb-12 tracking-tighter leading-[0.9] uppercase italic font-['IBM_Plex_Sans_KR']">
+    <div className="w-full max-w-screen-2xl mx-auto p-6 md:p-24 animate-in fade-in slide-in-from-bottom-8 duration-1000">
+      <header className="mb-12 md:mb-20">
+        <h1 className="text-4xl md:text-8xl font-black text-white mb-8 md:mb-12 tracking-tighter leading-[0.9] uppercase italic font-['IBM_Plex_Sans_KR']">
           {currentContent.title}
         </h1>
-        <div className="h-1.5 w-32 bg-blue-500 rounded-full shadow-[0_0_15px_rgba(59,130,246,0.5)]" />
+        <div className="h-1 md:h-1.5 w-20 md:w-32 bg-blue-500 rounded-full shadow-[0_0_15px_rgba(59,130,246,0.5)]" />
       </header>
       
       {currentContent.content ? (
-        <article className="prose prose-slate prose-2xl dark:prose-invert max-w-none font-['IBM_Plex_Sans_KR']">
+        <article className="prose prose-slate prose-lg md:prose-2xl dark:prose-invert max-w-none font-['IBM_Plex_Sans_KR']">
           <ReactMarkdown 
             remarkPlugins={[remarkGfm]}
             components={{
@@ -252,30 +253,30 @@ const PageContent = ({ data }: { data: Page[] }) => {
                 />
               ),
               table: ({node, ...props}) => (
-                <div className="overflow-x-auto my-16 rounded-[2rem] border border-slate-800 bg-slate-900/30 p-2 shadow-2xl backdrop-blur-sm">
+                <div className="overflow-x-auto my-12 md:my-16 rounded-[1.5rem] md:rounded-[2rem] border border-slate-800 bg-slate-900/30 p-2 shadow-2xl backdrop-blur-sm">
                   <table {...props} className="min-w-full divide-y divide-slate-800" />
                 </div>
               ),
-              th: ({node, ...props}) => <th {...props} className="px-10 py-8 bg-slate-800/50 text-left text-[11px] font-bold text-white uppercase tracking-[0.3em]" />,
-              td: ({node, ...props}) => <td {...props} className="px-10 py-8 text-base text-slate-200 font-medium border-t border-slate-800 whitespace-pre-wrap" />,
-              p: ({node, ...props}) => <p {...props} className="mb-10 leading-relaxed text-slate-200 text-xl font-medium" />
+              th: ({node, ...props}) => <th {...props} className="px-6 md:px-10 py-6 md:py-8 bg-slate-800/50 text-left text-[9px] md:text-[11px] font-bold text-white uppercase tracking-[0.3em]" />,
+              td: ({node, ...props}) => <td {...props} className="px-6 md:px-10 py-6 md:py-8 text-sm md:text-base text-slate-200 font-medium border-t border-slate-800 whitespace-pre-wrap" />,
+              p: ({node, ...props}) => <p {...props} className="mb-8 md:mb-10 leading-relaxed text-slate-200 text-lg md:text-xl font-medium" />
             }}
           >
             {sanitizedContent}
           </ReactMarkdown>
         </article>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8 mt-12 font-['IBM_Plex_Sans_KR']">
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 md:gap-8 mt-12 font-['IBM_Plex_Sans_KR']">
           {currentContent.subPages && currentContent.subPages.map((sub, i) => (
             <Link 
               key={i} 
               to={`${fullPath}/${encodeURIComponent(sub.title)}`}
-              className="group p-12 bg-slate-900/20 border border-slate-800 rounded-[2.5rem] hover:border-blue-500/30 transition-all duration-500 hover:bg-slate-900/40 shadow-xl"
+              className="group p-8 md:p-12 bg-slate-900/20 border border-slate-800 rounded-[2rem] md:rounded-[2.5rem] hover:border-blue-500/30 transition-all duration-500 hover:bg-slate-900/40 shadow-xl"
             >
-              <h3 className="text-2xl font-black text-white mb-4 group-hover:text-blue-400 transition-colors uppercase tracking-tighter italic">
+              <h3 className="text-xl md:text-2xl font-black text-white mb-4 group-hover:text-blue-400 transition-colors uppercase tracking-tighter italic">
                 {sub.title}
               </h3>
-              <p className="text-slate-400 font-medium text-base line-clamp-3">
+              <p className="text-slate-400 font-medium text-sm md:text-base line-clamp-3">
                 {sub.content ? stripMarkdown(sub.content) : "세부 내용을 확인하려면 클릭하세요."}
               </p>
             </Link>
@@ -330,8 +331,14 @@ function App() {
   const [time, setTime] = useState(new Date());
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isSyncing, setIsSyncing] = useState(false);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const location = useLocation();
   const isDashboardActive = location.pathname === '/';
+
+  // 페이지 이동 시 사이드바 닫기 (모바일)
+  useEffect(() => {
+    setIsSidebarOpen(false);
+  }, [location.pathname]);
 
   const fetchData = useCallback(async (force = false) => {
     setIsSyncing(true);
@@ -386,24 +393,38 @@ function App() {
   return (
     <div className="flex min-h-screen bg-[#050505] text-slate-200 font-sans selection:bg-blue-500/30 selection:text-white overflow-hidden font-['IBM_Plex_Sans_KR'] uppercase">
       
-      <aside className="w-96 bg-[#080808] border-r border-slate-900 flex flex-col sticky top-0 h-screen shrink-0 z-20 overflow-hidden shadow-2xl font-['IBM_Plex_Sans_KR']">
-        <div className="p-14 mb-4">
+      {/* Mobile Overlay */}
+      {isSidebarOpen && (
+        <div 
+          className="fixed inset-0 bg-black/60 backdrop-blur-sm z-40 md:hidden animate-in fade-in duration-300"
+          onClick={() => setIsSidebarOpen(false)}
+        />
+      )}
+
+      <aside className={`fixed inset-y-0 left-0 z-50 w-80 md:w-96 bg-[#080808] border-r border-slate-900 flex flex-col h-screen shrink-0 overflow-hidden shadow-2xl font-['IBM_Plex_Sans_KR'] transition-transform duration-300 ease-in-out md:translate-x-0 md:sticky md:top-0 ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'}`}>
+        <div className="p-10 md:p-14 mb-4 flex items-center justify-between">
           <Link to="/" className="flex flex-col gap-1 group">
             <div className="flex items-center gap-4">
-              <div className="w-12 h-12 bg-blue-600 rounded-2xl flex items-center justify-center text-white shadow-[0_0_20px_rgba(37,99,235,0.4)] group-hover:rotate-12 transition-all duration-500 border border-blue-400/20">
+              <div className="w-10 h-10 md:w-12 md:h-12 bg-blue-600 rounded-2xl flex items-center justify-center text-white shadow-[0_0_20px_rgba(37,99,235,0.4)] group-hover:rotate-12 transition-all duration-500 border border-blue-400/20">
                 <Database size={24} strokeWidth={2} />
               </div>
-              <span className="text-3xl font-black tracking-tighter text-white uppercase leading-none">
+              <span className="text-2xl md:text-3xl font-black tracking-tighter text-white uppercase leading-none">
                 SE3C
               </span>
             </div>
-            <span className="text-[11px] font-black tracking-[0.5em] text-slate-500 uppercase ml-16 group-hover:text-blue-400 transition-colors">
+            <span className="text-[10px] md:text-[11px] font-black tracking-[0.5em] text-slate-500 uppercase ml-14 md:ml-16 group-hover:text-blue-400 transition-colors">
               Database
             </span>
           </Link>
+          <button 
+            className="md:hidden p-2 text-slate-400 hover:text-white"
+            onClick={() => setIsSidebarOpen(false)}
+          >
+            <X size={24} />
+          </button>
         </div>
 
-        <nav className="flex-1 overflow-y-auto px-8 pb-16 space-y-12 custom-scrollbar">
+        <nav className="flex-1 overflow-y-auto px-6 md:px-8 pb-16 space-y-12 custom-scrollbar">
           <div>
             <Link 
               to="/" 
@@ -429,8 +450,8 @@ function App() {
           </div>
         </nav>
 
-        <div className="p-10 border-t border-slate-900/50 space-y-4 font-['IBM_Plex_Sans_KR']">
-          <div className="flex items-center gap-3 text-[11px] font-bold text-emerald-500 bg-emerald-500/5 px-6 py-3 rounded-2xl border border-emerald-500/10 uppercase tracking-[0.2em] shadow-inner">
+        <div className="p-8 md:p-10 border-t border-slate-900/50 space-y-4 font-['IBM_Plex_Sans_KR']">
+          <div className="flex items-center gap-3 text-[10px] md:text-[11px] font-bold text-emerald-500 bg-emerald-500/5 px-6 py-3 rounded-2xl border border-emerald-500/10 uppercase tracking-[0.2em] shadow-inner">
             <div className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse shadow-[0_0_12px_rgba(16,185,129,0.8)]" />
             Sync Node Active
           </div>
@@ -445,23 +466,34 @@ function App() {
         </div>
       </aside>
 
-      <main className="flex-1 flex flex-col h-screen overflow-hidden bg-[#050505] font-['IBM_Plex_Sans_KR']">
-        <header className="h-20 border-b border-slate-900/50 flex items-center justify-between px-16 bg-[#050505]/80 backdrop-blur-2xl z-30 shrink-0">
-          <div className="flex items-center gap-5 text-[11px] font-bold text-slate-600 uppercase tracking-[0.5em]">
-            <Globe size={16} /> Operation Terminal v2.3
+      <main className="flex-1 flex flex-col h-screen overflow-hidden bg-[#050505] font-['IBM_Plex_Sans_KR'] w-full">
+        <header className="h-20 border-b border-slate-900/50 flex items-center justify-between px-6 md:px-16 bg-[#050505]/80 backdrop-blur-2xl z-30 shrink-0">
+          <div className="flex items-center gap-4 md:gap-5">
+            <button 
+              className="md:hidden p-2 -ml-2 text-slate-400 hover:text-white transition-colors"
+              onClick={() => setIsSidebarOpen(true)}
+            >
+              <Menu size={24} />
+            </button>
+            <div className="flex items-center gap-2 md:gap-5 text-[10px] md:text-[11px] font-bold text-slate-600 uppercase tracking-[0.3em] md:tracking-[0.5em] truncate">
+              <Globe size={16} className="shrink-0" /> <span className="hidden sm:inline">Operation Terminal</span> v2.3
+            </div>
           </div>
-          <div className="flex items-center gap-8">
+          <div className="flex items-center gap-4 md:gap-8">
             <button 
               onClick={() => fetchData(true)}
               disabled={isSyncing}
-              className="flex items-center gap-3 px-5 py-2 bg-slate-900 border border-slate-800 rounded-xl text-[10px] font-black text-slate-400 hover:text-white hover:border-blue-500/50 transition-all active:scale-95 disabled:opacity-50 group"
+              className="flex items-center gap-3 px-3 md:px-5 py-2 bg-slate-900 border border-slate-800 rounded-xl text-[9px] md:text-[10px] font-black text-slate-400 hover:text-white hover:border-blue-500/50 transition-all active:scale-95 disabled:opacity-50 group"
             >
               <RefreshCw size={14} className={`${isSyncing ? 'animate-spin text-blue-500' : 'group-hover:text-blue-400'}`} />
-              {isSyncing ? 'SYNCING...' : 'FORCE_SYNC'}
+              <span className="hidden xs:inline">{isSyncing ? 'SYNCING...' : 'FORCE_SYNC'}</span>
             </button>
-            <div className="h-8 w-px bg-slate-900" />
-            <div className="flex items-center gap-4 text-3xl font-black text-slate-100 uppercase tracking-widest font-mono text-shadow-blue">
-              <Clock className="text-blue-500" size={28} /> {time.toLocaleTimeString('ko-KR', { hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' })}
+            <div className="h-8 w-px bg-slate-900 hidden xs:block" />
+            <div className="flex items-center gap-2 md:gap-4 text-xl md:text-3xl font-black text-slate-100 uppercase tracking-widest font-mono text-shadow-blue">
+              <Clock className="text-blue-500 shrink-0" size={20} /> 
+              <span className="text-sm md:text-3xl">
+                {time.toLocaleTimeString('ko-KR', { hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' })}
+              </span>
             </div>
           </div>
         </header>
