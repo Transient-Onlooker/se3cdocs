@@ -3,7 +3,7 @@ import {
   LayoutDashboard, Library, CreditCard, Link as LinkIcon, 
   History, Users, ChevronRight, Zap, Database, Calendar, 
   Globe, Loader2, Clock, Star, Lock, Key, RefreshCw, LogOut,
-  Menu, X
+  Menu, X, Search
 } from 'lucide-react';
 import { useState, useEffect, useCallback } from 'react';
 import ReactMarkdown from 'react-markdown';
@@ -25,6 +25,112 @@ const SESSION_TIMEOUT = 3600000; // 1시간 (밀리초)
 // 텍스트에서 Markdown 링크 형식을 제거하는 유틸리티
 const stripMarkdown = (text: string) => {
   return text.replace(/\[(.*?)\]\(.*?\)/g, '$1').replace(/<br\s*\/?>/gi, " ");
+};
+
+// 페이지 데이터를 검색하기 좋게 평탄화하는 함수
+const flattenPages = (pages: Page[], parentPath = ""): {title: string, path: string}[] => {
+  let result: {title: string, path: string}[] = [];
+  pages.forEach(page => {
+    const currentPath = `${parentPath}/${encodeURIComponent(page.title)}`;
+    result.push({ title: page.title, path: currentPath });
+    if (page.subPages) {
+      result = [...result, ...flattenPages(page.subPages as Page[], currentPath)];
+    }
+  });
+  return result;
+};
+
+// 브레드크럼 컴포넌트
+const Breadcrumbs = () => {
+  const location = useLocation();
+  const pathnames = location.pathname.split('/').filter((x) => x);
+  
+  if (pathnames.length === 0) return null;
+
+  return (
+    <nav className="flex items-center gap-3 text-[10px] font-black tracking-[0.2em] text-slate-500 uppercase mb-8 overflow-x-auto whitespace-nowrap pb-2 custom-scrollbar">
+      <Link to="/" className="hover:text-blue-400 transition-colors shrink-0">DASHBOARD</Link>
+      {pathnames.map((name, index) => {
+        const routeTo = `/${pathnames.slice(0, index + 1).join('/')}`;
+        const isLast = index === pathnames.length - 1;
+        return (
+          <div key={name} className="flex items-center gap-3 shrink-0">
+            <ChevronRight size={10} className="text-slate-800" />
+            {isLast ? (
+              <span className="text-blue-500">{decodeURIComponent(name)}</span>
+            ) : (
+              <Link to={routeTo} className="hover:text-blue-400 transition-colors">
+                {decodeURIComponent(name)}
+              </Link>
+            )}
+          </div>
+        );
+      })}
+    </nav>
+  );
+};
+
+// 검색 모달 컴포넌트
+const SearchModal = ({ isOpen, onClose, data }: { isOpen: boolean, onClose: () => void, data: Page[] }) => {
+  const [query, setQuery] = useState('');
+  const flatPages = flattenPages(data);
+  const filtered = query ? flatPages.filter(p => p.title.toLowerCase().includes(query.toLowerCase())).slice(0, 8) : [];
+
+  useEffect(() => {
+    if (isOpen) setQuery('');
+  }, [isOpen]);
+
+  if (!isOpen) return null;
+
+  return (
+    <div className="fixed inset-0 z-[100] flex items-start justify-center pt-[15vh] px-6">
+      <div className="fixed inset-0 bg-black/80 backdrop-blur-md" onClick={onClose} />
+      <div className="w-full max-w-2xl bg-slate-900 border border-slate-800 rounded-[2rem] shadow-[0_0_50px_rgba(0,0,0,0.5)] overflow-hidden animate-in fade-in zoom-in duration-300 relative z-10">
+        <div className="p-6 border-b border-slate-800 flex items-center gap-4">
+          <Search className="text-blue-500" size={24} />
+          <input 
+            type="text" 
+            autoFocus
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            placeholder="SEARCH OPERATIONAL DATABASE..."
+            className="flex-1 bg-transparent border-none outline-none text-white font-bold tracking-widest placeholder:text-slate-700 uppercase"
+          />
+          <kbd className="hidden sm:block px-3 py-1 bg-slate-800 rounded-lg text-[10px] text-slate-500 font-black tracking-widest">ESC</kbd>
+        </div>
+        <div className="max-h-[60vh] overflow-y-auto p-4">
+          {filtered.length > 0 ? (
+            <div className="space-y-2">
+              {filtered.map((item, idx) => (
+                <Link 
+                  key={idx} 
+                  to={item.path} 
+                  onClick={onClose}
+                  className="flex items-center justify-between p-5 rounded-2xl hover:bg-blue-600/10 border border-transparent hover:border-blue-500/20 transition-all group"
+                >
+                  <div className="flex items-center gap-4">
+                    <Database size={18} className="text-slate-600 group-hover:text-blue-400" />
+                    <span className="text-slate-200 font-bold group-hover:text-white uppercase tracking-wider">{item.title}</span>
+                  </div>
+                  <ChevronRight size={16} className="text-slate-800 group-hover:text-blue-500 group-hover:translate-x-1 transition-all" />
+                </Link>
+              ))}
+            </div>
+          ) : query ? (
+            <div className="p-10 text-center space-y-4">
+              <div className="text-slate-600 font-black tracking-[0.3em] uppercase">No results found</div>
+              <p className="text-slate-800 text-xs uppercase tracking-widest">Try searching for a different keyword</p>
+            </div>
+          ) : (
+            <div className="p-10 text-center space-y-4">
+              <div className="text-slate-700 font-black tracking-[0.3em] uppercase">Type to search nodes</div>
+              <p className="text-slate-800 text-xs uppercase tracking-widest italic">Querying se3c_database_archive...</p>
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
 };
 
 // 비밀번호 입력 컴포넌트
@@ -231,7 +337,8 @@ const PageContent = ({ data }: { data: Page[] }) => {
   const sanitizedContent = currentContent.content.replace(/<br\s*\/?>/gi, "\n");
 
   return (
-    <div className="w-full max-w-screen-2xl mx-auto p-12 md:p-24 animate-in fade-in slide-in-from-bottom-8 duration-1000">
+    <div className="w-full max-w-screen-2xl mx-auto p-8 md:p-24 animate-in fade-in slide-in-from-bottom-8 duration-1000">
+      <Breadcrumbs />
       <header className="mb-20">
         <h1 className="text-6xl md:text-8xl font-black text-white mb-12 tracking-tighter leading-[0.9] uppercase italic font-['IBM_Plex_Sans_KR']">
           {currentContent.title}
@@ -332,6 +439,7 @@ function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isSyncing, setIsSyncing] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
   const location = useLocation();
   const isDashboardActive = location.pathname === '/';
 
@@ -339,6 +447,21 @@ function App() {
   useEffect(() => {
     setIsSidebarOpen(false);
   }, [location.pathname]);
+
+  // 검색 단축키 (Ctrl+K)
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+        e.preventDefault();
+        setIsSearchOpen(true);
+      }
+      if (e.key === 'Escape') {
+        setIsSearchOpen(false);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []);
 
   const fetchData = useCallback(async (force = false) => {
     setIsSyncing(true);
@@ -476,18 +599,27 @@ function App() {
               <Menu size={24} />
             </button>
             <div className="hidden sm:flex items-center gap-5">
-              <Globe size={16} /> Operation Terminal v2.3
+              <Globe size={16} /> Operation Terminal v2.4
             </div>
             <div className="sm:hidden font-black text-blue-500 tracking-tighter text-lg">SE3C</div>
           </div>
-          <div className="flex items-center gap-8">
+          <div className="flex items-center gap-4 md:gap-8">
+            <button 
+              onClick={() => setIsSearchOpen(true)}
+              className="flex items-center gap-3 px-3 py-2 bg-slate-900 border border-slate-800 rounded-xl text-[10px] font-black text-slate-400 hover:text-blue-400 hover:border-blue-500/30 transition-all active:scale-95 group"
+              title="Search (Ctrl+K)"
+            >
+              <Search size={14} className="group-hover:scale-110 transition-transform" />
+              <span className="hidden sm:inline tracking-widest uppercase">Search</span>
+            </button>
+            <div className="h-6 w-px bg-slate-800/50 hidden sm:block" />
             <button 
               onClick={() => fetchData(true)}
               disabled={isSyncing}
-              className="flex items-center gap-3 px-5 py-2 bg-slate-900 border border-slate-800 rounded-xl text-[10px] font-black text-slate-400 hover:text-white hover:border-blue-500/50 transition-all active:scale-95 disabled:opacity-50 group"
+              className="flex items-center gap-3 px-3 py-2 bg-slate-900 border border-slate-800 rounded-xl text-[10px] font-black text-slate-400 hover:text-white hover:border-blue-500/50 transition-all active:scale-95 disabled:opacity-50 group"
             >
               <RefreshCw size={14} className={`${isSyncing ? 'animate-spin text-blue-500' : 'group-hover:text-blue-400'}`} />
-              {isSyncing ? 'SYNCING...' : 'FORCE_SYNC'}
+              <span className="hidden sm:inline tracking-widest uppercase">{isSyncing ? 'SYNCING...' : 'FORCE_SYNC'}</span>
             </button>
             <div className="hidden md:block h-8 w-px bg-slate-900" />
             <div className="hidden md:flex items-center gap-4 text-3xl font-black text-slate-100 uppercase tracking-widest font-mono text-shadow-blue">
@@ -503,6 +635,12 @@ function App() {
           </Routes>
         </div>
       </main>
+
+      <SearchModal 
+        isOpen={isSearchOpen} 
+        onClose={() => setIsSearchOpen(false)} 
+        data={data} 
+      />
     </div>
   );
 }
