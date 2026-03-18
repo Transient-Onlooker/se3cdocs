@@ -1,10 +1,10 @@
-# 🌌 SE3C Operational Space v2.3
+# 🌌 SE3C Operational Space v2.4
 
 > **Space Exploration Engineering Experimental Club (SE3C) Integrated Knowledge Database.**
 > 상상을 실현으로 바꾸는 실험 정신, 그 모든 기록의 중심.
 
 ![Node Status](https://img.shields.io/badge/Node-Active-emerald?style=for-the-badge&logo=target)
-![Version](https://img.shields.io/badge/Version-2.3-blue?style=for-the-badge)
+![Version](https://img.shields.io/badge/Version-2.4-blue?style=for-the-badge)
 ![Tech](https://img.shields.io/badge/Built%20with-React%20%7C%20Vite%20%7C%20Tailwind-indigo?style=for-the-badge)
 
 ---
@@ -16,10 +16,11 @@
 ### Key Features
 
 - **Real-time Synchronization**: Google Apps Script(GAS)를 통한 Google Docs 데이터 자동 연동.
-- **Hierarchical Dashboard**: 다단계 탭 구조와 제목을 분석하여 체계적인 문서 아카이브 제공.
+- **Quick Search & Command Palette**: `Ctrl + K` 단축키를 통한 전역 노드 검색 및 즉시 이동 기능.
+- **Hierarchical Breadcrumbs**: 복잡한 문서 구조 내에서도 현재 위치를 명확히 파악할 수 있는 경로 표시 시스템.
+- **Mobile Optimized UI**: 모바일 환경에서 접기/펼치기가 가능한 반응형 사이드바와 최적화된 레이아웃 제공.
 - **Technical Registry**: Markdown 기반의 정밀한 텍스트, 하이퍼링크 및 데이터 테이블 렌더링.
 - **Operational UI**: Notion 스타일의 다크 모드 인터페이스와 시스템 터미널 디자인.
-- **Adaptive Grid**: 대화면 모니터부터 모바일 기기까지 대응하는 유동적인 레이아웃.
 
 ---
 
@@ -74,6 +75,6 @@
 
 - **Primary Node**: Operational
 - **Data Integrity**: Verified
-- **Sync Protocol**: v2.3 Active
+- **Sync Protocol**: v2.4 Active
 
 © 2026 **SE3C Space**. All rights reserved. Developed for Scientific Exploration and Collaboration.
