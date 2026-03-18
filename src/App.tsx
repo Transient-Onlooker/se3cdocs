@@ -5,7 +5,7 @@ import {
   Globe, Loader2, Clock, Star, Lock, Key, RefreshCw, LogOut,
   Menu, X, Search
 } from 'lucide-react';
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useMemo } from 'react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import './index.css';
@@ -120,21 +120,21 @@ const SearchModal = ({ isOpen, onClose, data }: { isOpen: boolean, onClose: () =
         <div className="max-h-[60vh] overflow-y-auto p-4">
           {filtered.length > 0 ? (
             <div className="space-y-2">
-              {filtered.map((item, idx) => (
+              {filtered.map((item: {title: string, content: string, path: string}, idx: number) => (
                 <Link 
                   key={idx} 
                   to={item.path} 
                   onClick={onClose}
-                  className="flex flex-col p-5 rounded-2xl hover:bg-blue-600/10 border border-transparent hover:border-blue-500/20 transition-all group"
+                  className="flex flex-col p-4 md:p-5 rounded-2xl hover:bg-blue-600/10 border border-transparent hover:border-blue-500/20 transition-all group overflow-hidden"
                 >
-                  <div className="flex items-center justify-between mb-1">
-                    <div className="flex items-center gap-4">
-                      <Database size={18} className="text-slate-600 group-hover:text-blue-400" />
-                      <span className="text-slate-200 font-bold group-hover:text-white uppercase tracking-wider">{item.title}</span>
+                  <div className="flex items-center justify-between mb-1 gap-4">
+                    <div className="flex items-center gap-3 md:gap-4 min-w-0">
+                      <Database size={18} className="text-slate-600 group-hover:text-blue-400 shrink-0" />
+                      <span className="text-slate-200 font-bold group-hover:text-white uppercase tracking-wider truncate text-sm md:text-base">{item.title}</span>
                     </div>
-                    <ChevronRight size={16} className="text-slate-800 group-hover:text-blue-500 group-hover:translate-x-1 transition-all" />
+                    <ChevronRight size={16} className="text-slate-800 group-hover:text-blue-500 group-hover:translate-x-1 transition-all shrink-0" />
                   </div>
-                  <p className="text-[11px] text-slate-500 ml-9 font-medium lowercase tracking-tight line-clamp-1">
+                  <p className="text-[10px] md:text-[11px] text-slate-500 ml-7 md:ml-9 font-medium lowercase tracking-tight line-clamp-1 truncate">
                     {getContentSnippet(item.content, query)}
                   </p>
                 </Link>
