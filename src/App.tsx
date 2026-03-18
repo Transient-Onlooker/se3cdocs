@@ -28,11 +28,15 @@ const stripMarkdown = (text: string) => {
 };
 
 // 페이지 데이터를 검색하기 좋게 평탄화하는 함수
-const flattenPages = (pages: Page[], parentPath = ""): {title: string, path: string}[] => {
-  let result: {title: string, path: string}[] = [];
+const flattenPages = (pages: Page[], parentPath = ""): {title: string, content: string, path: string}[] => {
+  let result: {title: string, content: string, path: string}[] = [];
   pages.forEach(page => {
     const currentPath = `${parentPath}/${encodeURIComponent(page.title)}`;
-    result.push({ title: page.title, path: currentPath });
+    result.push({ 
+      title: page.title, 
+      content: stripMarkdown(page.content || ""), 
+      path: currentPath 
+    });
     if (page.subPages) {
       result = [...result, ...flattenPages(page.subPages as Page[], currentPath)];
     }
@@ -74,13 +78,28 @@ const Breadcrumbs = () => {
 const SearchModal = ({ isOpen, onClose, data }: { isOpen: boolean, onClose: () => void, data: Page[] }) => {
   const [query, setQuery] = useState('');
   const flatPages = flattenPages(data);
-  const filtered = query ? flatPages.filter(p => p.title.toLowerCase().includes(query.toLowerCase())).slice(0, 8) : [];
+  
+  const filtered = useMemo(() => {
+    if (!query) return [];
+    const q = query.toLowerCase();
+    return flatPages
+      .filter(p => p.title.toLowerCase().includes(q) || p.content.toLowerCase().includes(q))
+      .slice(0, 8);
+  }, [query, flatPages]);
 
   useEffect(() => {
     if (isOpen) setQuery('');
   }, [isOpen]);
 
   if (!isOpen) return null;
+
+  const getContentSnippet = (content: string, q: string) => {
+    const index = content.toLowerCase().indexOf(q.toLowerCase());
+    if (index === -1) return content.slice(0, 60) + "...";
+    const start = Math.max(0, index - 30);
+    const end = Math.min(content.length, index + 40);
+    return (start > 0 ? "..." : "") + content.slice(start, end) + (end < content.length ? "..." : "");
+  };
 
   return (
     <div className="fixed inset-0 z-[100] flex items-start justify-center pt-[15vh] px-6">
@@ -93,7 +112,7 @@ const SearchModal = ({ isOpen, onClose, data }: { isOpen: boolean, onClose: () =
             autoFocus
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            placeholder="SEARCH OPERATIONAL DATABASE..."
+            placeholder="SEARCH TITLES OR CONTENT..."
             className="flex-1 bg-transparent border-none outline-none text-white font-bold tracking-widest placeholder:text-slate-700 uppercase"
           />
           <kbd className="hidden sm:block px-3 py-1 bg-slate-800 rounded-lg text-[10px] text-slate-500 font-black tracking-widest">ESC</kbd>
@@ -106,25 +125,30 @@ const SearchModal = ({ isOpen, onClose, data }: { isOpen: boolean, onClose: () =
                   key={idx} 
                   to={item.path} 
                   onClick={onClose}
-                  className="flex items-center justify-between p-5 rounded-2xl hover:bg-blue-600/10 border border-transparent hover:border-blue-500/20 transition-all group"
+                  className="flex flex-col p-5 rounded-2xl hover:bg-blue-600/10 border border-transparent hover:border-blue-500/20 transition-all group"
                 >
-                  <div className="flex items-center gap-4">
-                    <Database size={18} className="text-slate-600 group-hover:text-blue-400" />
-                    <span className="text-slate-200 font-bold group-hover:text-white uppercase tracking-wider">{item.title}</span>
+                  <div className="flex items-center justify-between mb-1">
+                    <div className="flex items-center gap-4">
+                      <Database size={18} className="text-slate-600 group-hover:text-blue-400" />
+                      <span className="text-slate-200 font-bold group-hover:text-white uppercase tracking-wider">{item.title}</span>
+                    </div>
+                    <ChevronRight size={16} className="text-slate-800 group-hover:text-blue-500 group-hover:translate-x-1 transition-all" />
                   </div>
-                  <ChevronRight size={16} className="text-slate-800 group-hover:text-blue-500 group-hover:translate-x-1 transition-all" />
+                  <p className="text-[11px] text-slate-500 ml-9 font-medium lowercase tracking-tight line-clamp-1">
+                    {getContentSnippet(item.content, query)}
+                  </p>
                 </Link>
               ))}
             </div>
           ) : query ? (
             <div className="p-10 text-center space-y-4">
-              <div className="text-slate-600 font-black tracking-[0.3em] uppercase">No results found</div>
-              <p className="text-slate-800 text-xs uppercase tracking-widest">Try searching for a different keyword</p>
+              <div className="text-slate-600 font-black tracking-[0.3em] uppercase">No matches found</div>
+              <p className="text-slate-800 text-xs uppercase tracking-widest">Deep search across all nodes completed</p>
             </div>
           ) : (
             <div className="p-10 text-center space-y-4">
               <div className="text-slate-700 font-black tracking-[0.3em] uppercase">Type to search nodes</div>
-              <p className="text-slate-800 text-xs uppercase tracking-widest italic">Querying se3c_database_archive...</p>
+              <p className="text-slate-800 text-xs uppercase tracking-widest italic">Querying se3c_fulltext_index...</p>
             </div>
           )}
         </div>
@@ -334,7 +358,9 @@ const PageContent = ({ data }: { data: Page[] }) => {
     </div>
   );
 
-  const sanitizedContent = currentContent.content.replace(/<br\s*\/?>/gi, "\n");
+  const sanitizedContent = currentContent.content
+    .replace(/<br\s*\/?>/gi, "\n")
+    .replace(/^(\s*)>/gm, "$1\\>");
 
   return (
     <div className="w-full max-w-screen-2xl mx-auto p-8 md:p-24 animate-in fade-in slide-in-from-bottom-8 duration-1000">
