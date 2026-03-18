@@ -489,8 +489,8 @@ function App() {
               <RefreshCw size={14} className={`${isSyncing ? 'animate-spin text-blue-500' : 'group-hover:text-blue-400'}`} />
               {isSyncing ? 'SYNCING...' : 'FORCE_SYNC'}
             </button>
-            <div className="h-8 w-px bg-slate-900" />
-            <div className="flex items-center gap-4 text-3xl font-black text-slate-100 uppercase tracking-widest font-mono text-shadow-blue">
+            <div className="hidden md:block h-8 w-px bg-slate-900" />
+            <div className="hidden md:flex items-center gap-4 text-3xl font-black text-slate-100 uppercase tracking-widest font-mono text-shadow-blue">
               <Clock className="text-blue-500" size={28} /> {time.toLocaleTimeString('ko-KR', { hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' })}
             </div>
           </div>
