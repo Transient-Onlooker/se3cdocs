@@ -94,29 +94,29 @@ const Dashboard = ({ data }: { data: Page[] }) => {
   };
 
   return (
-    <div className="w-full p-8 md:p-16 animate-in fade-in slide-in-from-bottom-8 duration-1000">
-      <header className="mb-16 max-w-screen-2xl mx-auto">
-        <div className="flex items-center gap-6 mb-10">
-          <div className="p-3 bg-blue-500/10 rounded-2xl border border-blue-500/20 shadow-[0_0_20px_rgba(59,130,246,0.15)]">
-            <Database className="text-blue-400" size={40} strokeWidth={1.5} />
+    <div className="w-full p-4 md:p-16 animate-in fade-in slide-in-from-bottom-8 duration-1000">
+      <header className="mb-10 md:mb-16 max-w-screen-2xl mx-auto">
+        <div className="flex items-center gap-4 md:gap-6 mb-8 md:mb-10">
+          <div className="p-2 md:p-3 bg-blue-500/10 rounded-2xl border border-blue-500/20 shadow-[0_0_20px_rgba(59,130,246,0.15)]">
+            <Database className="text-blue-400" size={32} strokeWidth={1.5} />
           </div>
-          <h1 className="text-5xl md:text-6xl font-black tracking-tighter text-white uppercase">
+          <h1 className="text-3xl md:text-6xl font-black tracking-tighter text-white uppercase">
             SE3C <span className="text-blue-500 font-light uppercase">Operational Space</span>
           </h1>
         </div>
 
-        <div className="p-10 bg-slate-900/40 border border-slate-800 rounded-[2.5rem] flex gap-8 items-start shadow-2xl shadow-black/60 relative overflow-hidden group font-['IBM_Plex_Sans_KR']">
+        <div className="p-6 md:p-10 bg-slate-900/40 border border-slate-800 rounded-[2rem] md:rounded-[2.5rem] flex gap-5 md:gap-8 items-start shadow-2xl shadow-black/60 relative overflow-hidden group font-['IBM_Plex_Sans_KR']">
           <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-blue-500/50 to-transparent" />
-          <div className="w-14 h-14 bg-blue-500/20 rounded-2xl flex items-center justify-center text-blue-400 shrink-0 shadow-[0_0_15px_rgba(59,130,246,0.3)]">
-            <Star size={28} strokeWidth={1.5} />
+          <div className="w-10 h-10 md:w-14 md:h-14 bg-blue-500/20 rounded-xl md:rounded-2xl flex items-center justify-center text-blue-400 shrink-0 shadow-[0_0_15px_rgba(59,130,246,0.3)]">
+            <Star size={20} className="md:w-[28px] md:h-[28px]" strokeWidth={1.5} />
           </div>
-          <div className="space-y-4 font-['IBM_Plex_Sans_KR']">
-            <h4 className="font-bold text-blue-400 uppercase tracking-[0.3em] text-sm flex items-center gap-3">
+          <div className="space-y-3 md:space-y-4 font-['IBM_Plex_Sans_KR']">
+            <h4 className="font-bold text-blue-400 uppercase tracking-[0.2em] md:tracking-[0.3em] text-xs md:text-sm flex items-center gap-2 md:gap-3">
               🎯 SE3C 핵심 목표
             </h4>
-            <div className="space-y-4 text-slate-100 font-medium leading-relaxed text-xl">
+            <div className="space-y-3 md:space-y-4 text-slate-100 font-medium leading-relaxed text-lg md:text-xl">
               <p>상상하던 걸 실현해보는 실험 정신을 바탕으로, 단순한 형식을 넘어선 실제적인 결과물을 만들어냅니다.</p>
-              <p>2026년은 더 정밀한 데이터 계측과 실제적인 우주 공학 프로젝트에 집중하여, 학문적 깊이와 기술적 성장을 동시에 도모합니다.</p>
+              <p className="hidden sm:block">2026년은 더 정밀한 데이터 계측과 실제적인 우주 공학 프로젝트에 집중하여, 학문적 깊이와 기술적 성장을 동시에 도모합니다.</p>
             </div>
           </div>
         </div>
